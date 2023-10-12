@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="board1_space">
+
+	<typeAlias  alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="searchVO" type="egovframework.example.sample.service.SampleDefaultVO"/>
+	<typeAlias  alias="boardVO" type="egov.service.BoardVO"/>
+
+	<insert id="boardDAO.insertBoard">
+		INSERT INTO board1(unq,title,pass,name,content,rdate)
+		VALUES(board1_seq.nextval,#title#,#pass#,#name#,#content#,sysdate)
+	</insert>
+	
+	<!-- #데이터# 와 $데이터$ 모두 외부에서 받는 데이터이나, #데이터#는 보안처리. 콘솔에서 ?로 나옴. $데이터$는 보안미처리. -->	
+	
+	<!-- resultClass가 List 타입인데, ibatis에서는 List가 egovMap 임. List로 작성하면 안됨-->
+	<select id="boardDAO.selectBoardList" resultClass="egovMap">
+		<![CDATA[
+		SELECT B.* FROM (
+			SELECT ROWNUM RN, A.* FROM (
+				SELECT UNQ
+						,TITLE
+						,NAME
+						,HITS
+						,TO_CHAR(RDATE, 'YYYY-MM-DD') RDATE
+				FROM BOARD1
+				ORDER BY UNQ DESC 
+			) A
+		) B
+		WHERE RN >= $startno$ AND RN <= $endno$
+		]]>
+	</select>
+	
+	<select id="boardDAO.selectBoardTotal" resultClass="int">	
+	   SELECT COUNT(*) FROM BOARD1	
+	</select>
+	
+	<select id="boardDAO.selectBoardDetail" resultClass="boardVO">	
+		SELECT   UNQ
+				,TITLE
+				,NAME
+				,CONTENT
+				,TO_CHAR(RDATE,'yyyy-mm-dd') RDATE 
+		FROM board1
+		WHERE UNQ=#unq#		
+	</select>
+	
+	<update id="boardDAO.updateBoardHits">
+		UPDATE board1 SET HITS=HITS+1 
+			WHERE UNQ=#unq#
+	</update>
+	
+	<select id="boardDAO.selectBoardPass" resultClass="int">
+		SELECT COUNT(*) FROM board1 
+			WHERE UNQ=#unq# AND PASS = #pass#
+	</select>
+
+	<delete id="boardDAO.deleteBoard">
+		DELETE FROM board1
+			WHERE UNQ=#unq#
+	</delete>
+	
+	<insert id="boardDAO.insertReBoard">
+      INSERT INTO REBOARD(
+                     unq
+                     , title
+                     , pass
+                     , name
+                     , content
+                     , rdate
+                     , fid
+                     , thread)
+      VALUES(
+         reboard_seq.nextval
+         , #title#
+         , #pass#
+         , #name#
+         , #content#
+         , sysdate
+         , (select nvl(max(fid), 0) + 1 from reboard)
+         , 'a'
+         )
+	</insert>
+   
+	<select id="boardDAO.selectReBoardList" resultClass="egovMap">
+		SELECT UNQ
+				,TITLE
+				,NAME
+				,HITS
+				,to_char(RDATE, 'yyyy-mm-dd') RDATE
+		FROM reboard
+		ORDER BY UNQ DESC
+	</select>
+</sqlMap>
+
+
+
