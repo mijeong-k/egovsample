@@ -60,4 +60,19 @@ public class BoardServiceImpl  implements BoardService  {
 	      return boardDAO.selectReBoardList(vo);
 	   }
 
+	@Override
+	public BoardVO selectReBoardDetail(int unq) throws Exception {
+		return boardDAO.selectReBoardDetail(unq);
+	}
+
+	@Override
+	public String insertReBoardReply(BoardVO vo) throws Exception {
+		return boardDAO.insertReBoardReply(vo);
+	}
+
+	@Override
+	public BoardVO selectReBoardFid(int unq) throws Exception {
+		return boardDAO.selectReBoardFid(unq);
+	}
+
 }

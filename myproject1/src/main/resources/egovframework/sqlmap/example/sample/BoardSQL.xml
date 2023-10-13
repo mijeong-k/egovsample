@@ -30,7 +30,7 @@
 		) B
 		WHERE RN >= $startno$ AND RN <= $endno$
 		]]>
-	</select>
+	</select>	
 	
 	<select id="boardDAO.selectBoardTotal" resultClass="int">	
 	   SELECT COUNT(*) FROM BOARD1	
@@ -62,35 +62,80 @@
 	</delete>
 	
 	<insert id="boardDAO.insertReBoard">
-      INSERT INTO REBOARD(
-                     unq
-                     , title
-                     , pass
-                     , name
-                     , content
-                     , rdate
-                     , fid
-                     , thread)
-      VALUES(
-         reboard_seq.nextval
-         , #title#
-         , #pass#
-         , #name#
-         , #content#
-         , sysdate
-         , (select nvl(max(fid), 0) + 1 from reboard)
-         , 'a'
-         )
+		INSERT INTO REBOARD(
+			unq
+			, title
+			, pass
+			, name
+			, content
+			, rdate
+			, fid
+			, thread)
+		VALUES(
+			reboard_seq.nextval
+			, #title#
+			, #pass#
+			, #name#
+			, #content#
+			, sysdate
+			, (select nvl(max(fid), 0) + 1 from reboard)
+			, 'a'
+		)
+	</insert>
+   
+   	<insert id="boardDAO.insertReBoardReply">
+		INSERT INTO REBOARD(
+			unq
+			,title
+			,pass
+			,name
+			,content
+			,rdate
+			,fid
+			,thread)
+		VALUES(
+			reboard_seq.nextval
+			,'$title$'
+			,'$pass$'
+			,'$name$'
+			,'$content$'
+			,sysdate
+			,(select fid from reboard where unq='$unq$')
+			,'$thread$'
+		)
 	</insert>
    
 	<select id="boardDAO.selectReBoardList" resultClass="egovMap">
 		SELECT UNQ
+			,TITLE
+			,NAME
+			,HITS
+			,to_char(RDATE, 'yyyy-mm-dd') RDATE
+			,THREAD
+		FROM reboard
+		ORDER BY FID DESC, THREAD ASC
+	</select>
+		
+	<select id="boardDAO.selectReBoardDetail" resultClass="boardVO">	
+		SELECT   UNQ
 				,TITLE
 				,NAME
-				,HITS
-				,to_char(RDATE, 'yyyy-mm-dd') RDATE
+				,CONTENT
+				,TO_CHAR(RDATE,'yyyy-mm-dd') RDATE 
+				,FID
+				,THREAD
 		FROM reboard
-		ORDER BY UNQ DESC
+		WHERE UNQ=#unq#		
+	</select>
+	
+	<select id="boardDAO.selectReBoardFid" resultClass="boardVO">
+		select a.* from(
+    		select fid, thread 
+    		from reboard
+        		where fid=(select fid from reboard where unq = '$unq$')
+            	and length(thread) = (select length(thread) + 1 from reboard where unq = '$unq$')
+    			order by thread desc) a
+			where rownum =1
 	</select>
 </sqlMap>
 

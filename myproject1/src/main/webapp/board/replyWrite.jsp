@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>reboardWrite(답글입력화면)</title>
+<title>답변게시판 답변화면</title>
  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 </head>
@@ -86,7 +86,7 @@ input, textarea, button {
          //전송할 때
          type : "POST",
          data : form, //폼을 포스트 방식으로 전송한다
-         url  : "/myproject1/reBoardWriteSave.do",
+         url  : "/myproject1/replyWriteSave.do",
          
          //리턴할 때(결과값을 볼 때)
          //리턴 데이터타입
@@ -94,7 +94,7 @@ input, textarea, button {
          //여기서 말하는 msg의 datatype
          success : function(msg){
             if(msg == "ok"){
-               alert("저장완료");
+               alert("(답변)저장완료");
                location="/myproject1/reboardList.do"
             }else{
                alert("저장실패");
@@ -113,13 +113,17 @@ input, textarea, button {
 
 <body>
    <form name="frm" id="frm">
+   
+   	<input type="hidden" name="unq" value="${unq }">
+	<input type="hidden" name="thread" value="${thread }">
+   
    <!-- js 방식 <form name="frm" method="post" action="/myProject1/boardWriteSave.do">  -->
       <div>
          <table>
-            <caption class="caption1">답글게시판 입력화면</caption>
+            <caption class="caption1">답글게시판 답변화면</caption>
             <tr>
                <th>제목</th>
-               <td><input type="text" name="title" id="title" class="input1"
+               <td>답변 : <input type="text" name="title" id="title" class="input1"
                   placeholder="제목을 입력해주세요." autofocus></td>
             </tr>
             <tr>

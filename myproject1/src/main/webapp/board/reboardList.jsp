@@ -68,7 +68,7 @@ input, textarea, button {
 
 <script>
    function fn_action() {
-      location = "/myProject1/reboardWrite.do";
+      location = "/myproject1/reboardWrite.do";
    }
 </script>
 
@@ -84,14 +84,21 @@ input, textarea, button {
             <th>조회수</th>
          </tr>
          <c:set var="count" value="${pageno }" />
-
+		 <c:set var="len" value="${fn:length(list.thread) }"/>
          <c:forEach var="list" items="${ resultList }">
             <tr>
-               <td>${count }</td>
+               <td></td>
                <!-- ? 뒤의 내용은 파라미터임   웹주소?파라미터값
                                          웹주소와 파라미터 사이엔 ?만 올 수 있음  값을 전송하기 위함임   웹주소?변수명=변수값-->
-               <td><a href="/myProject1/reboardDetail.do?unq=${list.unq }">${list.title }</a></td>
-               <td>${list.rdate }</td>
+               <td>
+               <c:forEach var="i" begin="2" end="${fn:length(list.thread)}">
+               		&nbsp;&nbsp;
+               </c:forEach>
+               <c:if test="${fn:length(list.thread)>1 }">[re]</c:if>
+               <a href="/myproject1/reboardDetail.do?unq=${list.unq }">${list.title }</a>
+               </td>            
+               
+               <td>${fn:substring(list.rdate,0,10) }</td>
                <td>${list.name }</td>
                <td>${list.hits }</td>
             </tr>
@@ -107,7 +114,7 @@ input, textarea, button {
    <div class="pagging_area">
       <!-- var = 내부에서 쓸 변수 이름  -->
       <c:forEach var="i" begin="1" end="${lastpage }">
-      <a href="/myProject1/reboardList.do?page=${i }">${i }</a>
+      <a href="/myproject1/reboardList.do?page=${i }">${i }</a>
       </c:forEach>
    </div>
    <div class="button_area">

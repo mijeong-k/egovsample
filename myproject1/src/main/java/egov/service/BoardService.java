@@ -30,9 +30,29 @@ public interface BoardService {
 	
 	int deleteBoard(BoardVO vo) throws Exception;
 	
+	/*
+	 * 답변게시판 저장처리
+	 */	
 	String insertReBoard(BoardVO vo) throws Exception;
-	
+	/*
+	 * 답변게시판 답변 저장처리
+	 */	
+	String insertReBoardReply(BoardVO vo) throws Exception;
+	/*
+	 * 답변게시판 목록화면
+	 */
 	List<?> selectReBoardList(BoardVO vo) throws Exception;
+	/*
+	 * 답변게시판 상세보기 (int unq) :: 매개변수
+	 */	
+	BoardVO selectReBoardDetail(int unq) throws Exception;
+	
+	/*
+	 * 답변게시판 부모글의 데이터값 얻기 (fid, thread) 
+	 */
+	BoardVO selectReBoardFid(int unq) throws Exception;
+
+	
 }
 
 

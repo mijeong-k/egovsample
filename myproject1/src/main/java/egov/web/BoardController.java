@@ -97,6 +97,15 @@ public class BoardController {
 		return "board/boardDetail";
 	}
 	
+	@RequestMapping(value="/replyWrite.do")
+	public String replyWrite(BoardVO vo, ModelMap model) {
+		
+		model.addAttribute("unq", vo.getUnq());
+		model.addAttribute("thread", vo.getThread());
+		
+		return "board/replyWrite";
+	}
+	
 	@RequestMapping(value="/boardPassWrite.do")
 	public String boardPassWrite(int unq, ModelMap model) {
 		
@@ -135,6 +144,10 @@ public class BoardController {
 	      return "board/reboardWrite";
 	   }
 
+	   
+	   //@ResponseBody 가 있어야만 웹주소값이 아닌 값(여기선 msg)을 보낼 수 있음
+	   //비동기 전송방식을 통해 데이터를 전달 하기위한 목적을 가진 어노테이션
+	   
 	   @RequestMapping(value = "/reBoardWriteSave.do")
 	   @ResponseBody
 	   public String insertReBoard(BoardVO vo) throws Exception {
@@ -152,6 +165,43 @@ public class BoardController {
 	      return msg;
 	   }
 	   
+	   @RequestMapping(value="/replyWriteSave.do")
+	   @ResponseBody
+	   public String insertReBoardReply(BoardVO vo) throws Exception{
+		   
+		   // unq = 1;		   
+		   int unq = vo.getUnq();
+		   BoardVO vo1 = boardService.selectReBoardFid(unq);
+		   System.out.println("**********");
+		   
+		   String thread = null;
+		   String mythread = "";
+		   
+		   // 답글이 하나도 없을 때(== null)
+		   if(vo1 == null) {
+			   mythread = vo.getThread()+"a";
+		   }else {
+			   // ex : ac => ad
+			   thread = vo1.getThread();  //ac => c => d => "a"+"d"
+			   char lastword = ' ';
+			   lastword = thread.charAt(thread.length()-1);
+			   lastword++;		   
+			   
+			   mythread = thread.substring(0, thread.length()-1) + lastword;
+		   }
+		   
+		   String msg = "";
+		   vo.setThread(mythread);
+		   String result = boardService.insertReBoardReply(vo);
+		   
+		   // 정상 저장 :: (result == null)
+		   if(result == null) {
+			   msg = "ok";
+		   }
+			   
+		   return msg;
+	   }
+	   
 	   @RequestMapping(value="/reboardList.do")
 	   public String selectReBoardList(BoardVO vo, ModelMap model) throws Exception{
 	      
@@ -160,6 +210,35 @@ public class BoardController {
 	      
 	      return "board/reboardList";
 	   }
+	   
+		@RequestMapping(value="reboardDetail.do")
+		public String selectReBoardDetail(int unq, ModelMap model) throws Exception{
+			
+			BoardVO vo = boardService.selectReBoardDetail(unq);	
+			
+			// 줄바꿈, 띄어쓰기 자바어로 적용
+			String content = vo.getContent();
+			content = content.replace("\n", "<br>");
+			content = content.replace(" ", "&nbsp;");	
+			vo.setContent(content);
+			
+			model.addAttribute("resultDetail", vo);
+			
+			// 조회수 증가
+			// int cnt = boardService.updateBoardHits(unq);
+			
+			return "board/reboardDetail";
+		}
+		
+		
+		
+		
+		//레이아웃 추가 후 작성하는 컨트롤러
+		@RequestMapping(value="/sample.do")
+		public String sample() {
+			
+			return "main/sample";
+		}
 }
 
 

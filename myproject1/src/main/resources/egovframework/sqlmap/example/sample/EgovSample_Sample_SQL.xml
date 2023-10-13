@@ -70,7 +70,7 @@
 				NAME LIKE '%' || #searchKeyword# || '%'
 			</isEqual>
 			ORDER BY ID DESC
-			LIMIT #recordCountPerPage# OFFSET #firstIndex#		
+			<!-- LIMIT #recordCountPerPage# OFFSET #firstIndex#	-->
 	</select>
 	
 	<select id="sampleDAO.selectSampleListTotCnt" parameterClass="searchVO" resultClass="int">

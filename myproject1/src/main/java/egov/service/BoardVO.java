@@ -14,6 +14,21 @@ public class BoardVO {
 	private int startno;
 	private int endno;
 	
+	private int fid;
+	private String thread;
+	
+	public String getThread() {
+		return thread;
+	}
+	public void setThread(String thread) {
+		this.thread = thread;
+	}
+	public int getFid() {
+		return fid;
+	}
+	public void setFid(int fid) {
+		this.fid = fid;
+	}
 	public int getStartno() {
 		return startno;
 	}
